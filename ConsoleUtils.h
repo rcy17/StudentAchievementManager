@@ -96,17 +96,6 @@ email:rcycyzh@163.com
 
 )123";
 		break;
-	case INPUT_STUDENT:
-		
-		break;
-	case INPUT_SUBJECT:
-		break;
-	case INPUT_FILE:
-		break;
-	case INPUT_FREE:
-		SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
-		cout << "请输入文件名" << endl;
-		break;
 	case STUDENTS:
 		
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);

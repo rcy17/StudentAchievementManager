@@ -69,6 +69,29 @@ void CUser::AddStudent(const string&Name, const string&Number)
 
 }
 
+bool CUser::CheckSubjectNumber(const string&SubjectNumber)
+{
+	auto it = SubjectNumber.begin();
+	if (!((*it >= '0'&&*it <= '9') || (*it >= 'A'&&*it <= 'Z')))
+		return false;
+	for (it++; it != SubjectNumber.end(); it++)
+	{
+		if (*it<'0' || *it>'9')
+			return false;
+	}
+	return true;
+}
+
+bool CUser::CheckStudentNumber(const string&StudentNumber)
+{
+	for (auto it = StudentNumber.begin(); it != StudentNumber.end(); it++)
+	{
+		if (*it<'0' || *it>'9')
+			return false;
+	}
+	return true;
+}
+
 bool CUser::DeleteStudent(const string&s)
 {
 	auto iterator = g_mNumberToStudent.find(s);

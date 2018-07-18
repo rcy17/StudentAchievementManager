@@ -28,7 +28,6 @@ private:
 	virtual void ReadData();
 	virtual void WriteData();
 	CInitialize(const CInitialize&);
-	CInitialize& operator=(const CInitialize&);
 
 public:
 
@@ -54,9 +53,8 @@ private:
 
 	CMainMenu(){}
 
-	//copy ctor and assignment should be private
+
 	CMainMenu(const CMainMenu&);
-	CMainMenu& operator=(const CMainMenu&);
 
 public:
 
@@ -82,8 +80,10 @@ private:
 	virtual void ReadData();
 	virtual void WriteData();
 	CInputResults(const CInputResults&);
-	CInputResults& operator=(const CInputResults&);
-
+	void FreeInput(CUser* pCUser);
+	void StudentInput(CUser* pCUser);
+	void SubjectInput(CUser* pCUser);
+	void FileInput(CUser* pCUser);
 
 public:
 
@@ -110,9 +110,9 @@ private:
 	}
 
 	CQueryStudents(const CQueryStudents&);
-	CQueryStudents& operator=(const CQueryStudents&);
 	void QueryStudent(CUser* pCUser);
 	void EditInfomation(CUser*pCUser, const string&StudentNumber, const size_t&StudentLable);
+
 public:
 
 	//这是一个有限状态机
@@ -138,7 +138,6 @@ private:
 	}
 
 	CQuerySubjects(const CQuerySubjects&);
-	CQuerySubjects& operator=(const CQuerySubjects&);
 	void QuerySubject(CUser* pCUser);
 	void EditInfomation(CUser*pCUser, const string&SubjectNumber, const size_t&SubjectLable);
 
@@ -169,7 +168,6 @@ private:
 	void ShowCreditList();
 	void ShowFailList();
 	CRankList(const CRankList&);
-	CRankList& operator=(const CRankList&);
 
 public:
 
@@ -195,7 +193,6 @@ private:
 	{
 	}
 	CClear(const CClear&);
-	CClear& operator=(const CClear&);
 	void Clear(CUser* pCUser);
 public:
 
@@ -223,7 +220,6 @@ private:
 	virtual void ReadData();
 	virtual void WriteData();
 	CExit(const CExit&);
-	CExit& operator=(const CExit&);
 
 public:
 

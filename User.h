@@ -47,7 +47,11 @@ public:
 	void AddSubject(const string&Name, const string&Number);
 	//删除vector中的课程
 	/*bool DeleteSubject(const string&s);*/
-
+	
+	//检测一个学号是否合法，应当是纯数字组成
+	bool CheckStudentNumber(const string&StudentNumber);
+	//检测一个课程号是否合法，应当是纯数字或者大写首字母+纯数字
+	bool CheckSubjectNumber(const string&SubjectNumber);
 	//根据学号找到一个学生下标
 	size_t FindStudent(const string&s);
 	//根据课程号找到一门课程下标
