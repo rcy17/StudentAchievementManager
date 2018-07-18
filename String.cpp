@@ -26,13 +26,15 @@ string String::GetNumber()
 string String::GetGrade()
 {
 	string tem = *this;
-	for (auto iterator = tem.begin(); iterator != tem.end(); iterator++)
+	for (auto iterator = tem.begin(); iterator != tem.end(); )
 	{
-		if (*iterator > '9' || *iterator < '0')
+		if (*iterator <= '9' && *iterator >= '0')
 		{
-			tem.erase(tem.begin(), iterator);
-			return tem;
+
+			iterator=tem.erase(iterator);
 		}
+		else
+			return tem;
 	}
 	return tem;
 }

@@ -242,11 +242,19 @@ void CInputResults::FreeInput(CUser* pCUser)
 	{
 		if (pCUser->CheckSubjectNumber(SubjectNumber))
 		{
-			cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名，返回输入W)" << endl;
+			int Credit;
+			cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名与学分数，返回输入W)" << endl;
 			cin >> SubjectName;
 			if (SubjectName == string("W"))
 				return;
-			pCUser->AddSubject(SubjectName, SubjectNumber);
+			cin >> Credit;
+			while (!pCUser->CheckCredit(Credit))
+			{
+				cout << "无效的学分数，请重新输入或输入W返回:";
+				cin >> Credit;
+			}
+			
+			pCUser->AddSubject(SubjectName, SubjectNumber,Credit);
 		}
 		else
 		{
@@ -317,11 +325,18 @@ void CInputResults::StudentInput(CUser* pCUser)
 		{
 			if (pCUser->CheckSubjectNumber(SubjectNumber))
 			{
-				cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名，返回输入W)" << endl;
+				cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加分别输入课程名和学分，返回输入W)" << endl;
 				cin >> SubjectName;
 				if (SubjectName == string("W"))
 					return;
-				pCUser->AddSubject(SubjectName, SubjectNumber);
+				int Credit;
+				cin >> Credit;
+				while (!pCUser->CheckCredit(Credit))
+				{
+					cout << "无效的学分数，请重新输入或输入W返回:";
+					cin >> Credit;
+				}
+				pCUser->AddSubject(SubjectName, SubjectNumber,Credit);
 			}
 			else
 			{
@@ -365,12 +380,19 @@ void CInputResults::SubjectInput(CUser* pCUser)
 	while (!(SubjectLabel = pCUser->FindSubject(SubjectNumber)))
 	{
 
-		cout << "未找到课程为" << SubjectNumber << "的课程，请输入姓名添加课程或输入W返回" << endl;
+		cout << "未找到课程为" << SubjectNumber << "的课程，请输入课程名与学分(空格隔开)添加课程或输入W返回" << endl;
 		string SubjectName;
 		cin >> SubjectName;
 		if (SubjectName == string("W"))
 			return;
-		pCUser->AddSubject(SubjectName, SubjectNumber);
+		int Credit;
+		cin >> Credit;
+		while (!pCUser->CheckCredit(Credit))
+		{
+			cout << "无效的学分数，请重新输入或输入W返回:";
+			cin >> Credit;
+		}
+		pCUser->AddSubject(SubjectName, SubjectNumber,Credit);
 
 	}
 	//循环输入学生成绩
@@ -488,12 +510,11 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 			cout << iterator->GetNumber() << g_vSubject[pCUser->FindSubject(iterator->GetNumber())].GetName() << iterator->GetGrade() << endl;
 		}
 		cout << "是否需要删改或增添信息?" << endl;
-		if (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键编辑信息。"))
+		while (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键编辑信息。"))
 		{
 			EditInfomation(pCUser, StudentNumber, StudentLabel);
 
 		}
-		else
 			return;
 	}
 	else
@@ -521,7 +542,7 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 
 void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, const size_t&StudentLabel)
 {
-	cout << "请输入目标学生的学号:(返回请输入W)";
+	cout << "请输入目标课程的课程号:(返回请输入W)";
 	string SubjectNumber;
 	cin >> SubjectNumber;
 	if (SubjectNumber == string("W"))
@@ -532,7 +553,7 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 		if (g_vStudent[StudentLabel].GetSubjectGrade(SubjectNumber) != string("W"))
 		{
 			string NewGrade;
-			cout << "学号为" << SubjectNumber << "姓名为" << g_vSubject[SubjectLabel].GetName() << "的学生的成绩为"
+			cout << "课程号为" << SubjectNumber << "课程名为" << g_vSubject[SubjectLabel].GetName() << "的课的成绩为"
 				<< g_vSubject[SubjectLabel].GetStudentGrade(StudentNumber) << endl;
 			cout << "请输入其新成绩(用大写字母表示,删除请输入W):";
 			if ((NewGrade = InputPa()) != string("W"))
@@ -548,7 +569,7 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 		}
 		else
 		{
-			cout << "未找到学号为" << SubjectNumber << "的学生的课程成绩，如果希望添加成绩请输入成绩（大写字母），返回请输入W:" << endl;
+			cout << "未找到课程号为" << SubjectNumber << "的课程成绩，如果希望添加成绩请输入成绩（大写字母），返回请输入W:" << endl;
 			string Grade = InputPa();
 			if (Grade != string("W"))
 			{
@@ -559,20 +580,8 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 	}
 	else
 	{
-		cout << "未找到学号为" << SubjectNumber << "的学生的信息，如果希望添加该学生请先输入学生姓名以添加学生信息，返回请输入W:" << endl;
-		string Name;
-		cin >> Name;
-		if (Name != string("W"))
-		{
-			pCUser->AddSubject(Name, SubjectNumber);
-			cout << "请输入其成绩(返回请输入W):";
-			string Grade = InputPa();
-			if (Grade != string("W"))
-			{
-				g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
-				g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
-			}
-		}
+		cout << "未找到课程号为" << SubjectNumber << "的课程信息，如果希望添加该课程请前往成绩录入菜单！" << endl;
+	
 	}
 }
 
@@ -641,12 +650,11 @@ void CQuerySubjects::QuerySubject(CUser* pCUser)
 			cout << iterator->GetNumber() << g_vStudent[pCUser->FindStudent(iterator->GetNumber())].GetName() << iterator->GetGrade() << endl;
 		}
 		cout << "是否需要删改或增添信息?" << endl;
-		if (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键继续编辑信息。"))
+		while (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键继续编辑信息。"))
 		{
 			EditInfomation(pCUser, SubjectNumber, SubjectLabel);
 
 		}
-		else
 			return;
 	}
 	else
@@ -819,13 +827,15 @@ void CRankList::ShowFailList()
 {
 	system("cls");
 	cout << "----------------挂科记录--------------------" << endl;
-	for (auto IteratorForStudent = g_vStudent.begin(); IteratorForStudent != g_vStudent.begin(); IteratorForStudent++)//遍历所有学生
+	for (auto IteratorForStudent = g_vStudent.begin()+1; IteratorForStudent != g_vStudent.end(); IteratorForStudent++)//遍历所有学生
 	{
 		for (auto IteratorForSubject = IteratorForStudent->m_lstSubjects.begin(); IteratorForSubject != IteratorForStudent->m_lstSubjects.end(); IteratorForSubject++)
 		{
-			if (IteratorForSubject->GetGrade() == "F")//遍历该学生所有课程，找到不及格的
-				cout << IteratorForStudent->GetNumber() << IteratorForStudent->GetName() << ":" << IteratorForSubject->GetNumber() <<
-				g_vSubject[g_mNumberToSubject.find(IteratorForSubject->GetNumber())->second].GetName() << endl;//输出学号、姓名、课程号、课程名
+			if (IteratorForSubject->GetGrade() == string("F"))//遍历该学生所有课程，找到不及格的
+				cout <<"学号"<<IteratorForStudent->GetNumber() <<"  姓名"<< IteratorForStudent->GetName() << 
+				":" <<"\t课程号"<<IteratorForSubject->GetNumber() <<" 课程名："<<
+				g_vSubject[g_mNumberToSubject.find(IteratorForSubject->GetNumber())->second].GetName() << 
+				endl;//输出学号、姓名、课程号、课程名
 		}
 	}
 	PressAnyKeyToContinue();

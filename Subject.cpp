@@ -5,8 +5,8 @@ CSubject::CSubject():m_bChanged(true),m_fGPA(0)
 
 }
 
-CSubject::CSubject(const string&Name, const string&Number) :m_szName(Name), m_szNumber(Number),
-m_bChanged(true), m_fGPA(0)
+CSubject::CSubject(const string&Name, const string&Number,int Credit) :m_szName(Name), m_szNumber(Number),
+m_bChanged(true), m_fGPA(0),m_nCredit(Credit)
 {
 
 }
@@ -131,4 +131,15 @@ bool CSubject::operator==(const CSubject&A)
 void CSubject::Changed()
 {
 	m_bChanged = true;
+}
+
+
+void CSubject::EditName(const string&Name)
+{
+	m_szName = Name;
+}
+
+void CSubject::ChangeCredit(int Credit)
+{
+	m_nCredit = Credit;
 }

@@ -36,6 +36,8 @@ public:
 	void Changed();
 	//获取当前总学分
 	int GetCredits();
+	//修改姓名
+	void EditName(const string&Name);
 private:
 	//记录学生姓名
 	string m_szNumber;

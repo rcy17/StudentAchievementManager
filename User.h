@@ -44,10 +44,11 @@ public:
 	bool DeleteStudent(const string&s);
 
 	//添加vector中的课程
-	void AddSubject(const string&Name, const string&Number);
+	void AddSubject(const string&Name, const string&Number,int Credit);
 	//删除vector中的课程
 	/*bool DeleteSubject(const string&s);*/
-	
+	//检测一个学分是否合法，应当是0-15（已经考虑了各种奇奇怪怪的课）
+	bool CheckCredit(int Credit);
 	//检测一个学号是否合法，应当是纯数字组成
 	bool CheckStudentNumber(const string&StudentNumber);
 	//检测一个课程号是否合法，应当是纯数字或者大写首字母+纯数字
@@ -60,6 +61,7 @@ public:
 	enum_menu Menu()const;
 	//改变用户当前所处的菜单位置
 	void ChangeCurrentMenu(const enum_menu loc);
+	
 
 };
 #endif

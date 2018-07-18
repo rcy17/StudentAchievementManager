@@ -154,3 +154,8 @@ void CStudent::Changed()
 {
 	m_bChange = true;
 }
+
+void CStudent::EditName(const string&Name)
+{
+	m_szName = Name;
+}

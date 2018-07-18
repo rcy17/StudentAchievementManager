@@ -6,7 +6,7 @@ class CSubject
 {
 public:
 	CSubject();
-	CSubject(const string&Name, const string&Number);
+	CSubject(const string&Name, const string&Number,int Credit);
 	~CSubject();
 	//设置课程号
 	void SetName(const string &s);
@@ -32,6 +32,10 @@ public:
 	string GetName()const;
 	//每当涉及GPA的数据被更改后调用此函数以标记
 	void Changed();
+	//改变课程名
+	void EditName(const string&Name);
+	//改变学分
+	void ChangeCredit(int Credit);
 private:
 	//课程号
 	string m_szNumber;

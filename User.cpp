@@ -92,6 +92,13 @@ bool CUser::CheckStudentNumber(const string&StudentNumber)
 	return true;
 }
 
+bool CUser::CheckCredit(int Credit)
+{
+	if (Credit >= 0 && Credit <= 15)
+		return true;
+	return false;
+}
+
 bool CUser::DeleteStudent(const string&s)
 {
 	auto iterator = g_mNumberToStudent.find(s);
@@ -132,13 +139,14 @@ bool CUser::DeleteStudent(const string&s)
 	return false;
 }
 
-void CUser::AddSubject(const string&Name, const string&Number)
+void CUser::AddSubject(const string&Name, const string&Number,int Credit)
 {
 	if (!FindSubject(Number))
 	{
 
 		g_mNumberToSubject.insert(pair<string, size_t>(Number, g_vSubject.size()));
-		g_vSubject.push_back(CSubject(Name, Number));
+		g_vSubject.push_back(CSubject(Name, Number,Credit));
+		
 	}
 	else
 	{
