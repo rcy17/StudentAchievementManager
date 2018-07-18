@@ -1,0 +1,26 @@
+#ifndef MENUS_H
+#define MENUS_H
+
+
+enum enum_menu
+{
+  WELCOME,
+  MAIN,
+  PUTIN,
+  STUDENTS,
+  SUBJECTS,
+  RANK,
+  CLEAR,
+  OVER,
+  INPUT_STUDENT,
+  INPUT_SUBJECT,
+  INPUT_FREE,
+  INPUT_FILE,
+
+  SUBJECTS_INPUT,
+
+  CLEAR_CHOOSE,
+
+};
+
+#endif
