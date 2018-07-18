@@ -137,7 +137,7 @@ void CInputResults::Enter(CUser* pCUser)
 void CInputResults::Execute(CUser* pCUser)
 {
 	//录入界面同一颜色
-	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_INTENSITY);
 	switch (pCUser->Menu())
 	{
 	case PUTIN:
@@ -218,27 +218,52 @@ void CInputResults::FreeInput(CUser* pCUser)
 	cin >> Grade;
 	if (Grade == string("W"))
 		return;
+	//判断学号存在性与合法性
 	while (!(StudentLabel = pCUser->FindStudent(StudentNumber)))
 	{
-		cout << "学号" << StudentNumber << "不存在，是否添加？(添加输入学生姓名，返回输入W)" << endl;
-		cin >> StudentName;
-		if (StudentName == string("W"))
-			return;
-		pCUser->AddStudent(StudentName, StudentNumber);
+		if (pCUser->CheckStudentNumber(StudentNumber))
+		{
+			cout << "学号" << StudentNumber << "不存在，是否添加？(添加输入学生姓名，返回输入W)" << endl;
+			cin >> StudentName;
+			if (StudentName == string("W"))
+				return;
+			pCUser->AddStudent(StudentName, StudentNumber);
+		}
+		else
+		{
+			cout << "学号<" << StudentNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
+			cin >> StudentNumber;
+			if (StudentNumber == string("W"))
+				return;
+		}
 	}
+	//判断课程号存在性与合法性
 	while (!(SubjectLabel = pCUser->FindSubject(SubjectNumber)))
 	{
-		cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名，返回输入W)" << endl;
-		cin >> SubjectName;
-		if (SubjectName == string("W"))
-			return;
-		pCUser->AddSubject(SubjectName, SubjectNumber);
+		if (pCUser->CheckSubjectNumber(SubjectNumber))
+		{
+			cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名，返回输入W)" << endl;
+			cin >> SubjectName;
+			if (SubjectName == string("W"))
+				return;
+			pCUser->AddSubject(SubjectName, SubjectNumber);
+		}
+		else
+		{
+			cout << "课程号<" << SubjectNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
+			cin >> SubjectNumber;
+			if (SubjectNumber == string("W"))
+				return;
+		}
 	}
+	//判断成绩合法性
 	while (GetGP(Grade) == -1.0f)
 	{
-		cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩" << Grade << 
-			"无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
+		cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
+			">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
 		cin >> Grade;
+		if (Grade == string("W"))
+			return;
 	}
 	g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
 	g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
@@ -248,12 +273,152 @@ void CInputResults::FreeInput(CUser* pCUser)
 
 void CInputResults::StudentInput(CUser* pCUser)
 {
+	system("cls");
+	string StudentNumber;
+	cout << "请输入目标学生的学号:";
+	cin >> StudentNumber;
+	
+	size_t StudentLabel;
+	//判断学号合法性
+	while (!(pCUser->CheckStudentNumber(StudentNumber)))
+	{
+		cout << "无效的学号!请重新输入或输入W返回!" << endl;
+		cin >> StudentNumber;
+		if (StudentNumber == string("W"))
+			return;
+	}
+	//判断学号存在性
+	while (!(StudentLabel=pCUser->FindStudent(StudentNumber)))
+	{
+	
+		cout << "未找到学号为" << StudentNumber << "的学生，请输入姓名添加学生或输入W返回" << endl;
+		string StudentName;
+		cin >> StudentName;
+		if (StudentName == string("W"))
+			return;
+		pCUser->AddStudent(StudentName, StudentNumber);
 
+	}
+	//循环输入课程成绩
+	while (true)
+	{
+		system("cls");
+		cout << "请输入课程号与成绩,用空格隔开，或输入W返回" << endl;
+		string SubjectNumber, SubjectName,Grade;
+		size_t SubjectLabel;
+		cin >> SubjectNumber;
+		if (SubjectNumber == string("W"))
+			return;
+		cin >> Grade;
+		if (Grade == string("W"))
+			return;
+		//判断课程号存在性与合法性
+		while (!(SubjectLabel=pCUser->FindSubject(SubjectNumber)))
+		{
+			if (pCUser->CheckSubjectNumber(SubjectNumber))
+			{
+				cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名，返回输入W)" << endl;
+				cin >> SubjectName;
+				if (SubjectName == string("W"))
+					return;
+				pCUser->AddSubject(SubjectName, SubjectNumber);
+			}
+			else
+			{
+				cout << "课程号<" << SubjectNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
+				cin >> SubjectNumber;
+				if (SubjectNumber == string("W"))
+					return;
+			}
+		}
+		//判断成绩合法性
+		while (GetGP(Grade) == -1.0f)
+		{
+			cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
+				">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
+			cin >> Grade;
+			if (Grade == string("W"))
+				return;
+		}
+		g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
+		g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
+	}
 }
+
 void CInputResults::SubjectInput(CUser* pCUser)
 {
+	system("cls");
+	string SubjectNumber;
+	cout << "请输入目标课程的课程号:";
+	cin >> SubjectNumber;
 
+	size_t SubjectLabel;
+	//判断课程号合法性
+	while (!(pCUser->CheckSubjectNumber(SubjectNumber)))
+	{
+		cout << "无效的课程号!请重新输入或输入W返回!" << endl;
+		cin >> SubjectNumber;
+		if (SubjectNumber == string("W"))
+			return;
+	}
+	//判断课程号存在性
+	while (!(SubjectLabel = pCUser->FindSubject(SubjectNumber)))
+	{
+
+		cout << "未找到课程为" << SubjectNumber << "的课程，请输入姓名添加课程或输入W返回" << endl;
+		string SubjectName;
+		cin >> SubjectName;
+		if (SubjectName == string("W"))
+			return;
+		pCUser->AddSubject(SubjectName, SubjectNumber);
+
+	}
+	//循环输入学生成绩
+	while (true)
+	{
+		system("cls");
+		cout << "请输入学号与成绩,用空格隔开，或输入W返回" << endl;
+		string StudentNumber, StudentName, Grade;
+		size_t StudentLabel;
+		cin >> StudentNumber;
+		if (StudentNumber == string("W"))
+			return;
+		cin >> Grade;
+		if (Grade == string("W"))
+			return;
+		//判断学号存在性与合法性
+		while (!(StudentLabel = pCUser->FindStudent(StudentNumber)))
+		{
+			if (pCUser->CheckStudentNumber(StudentNumber))
+			{
+				cout << "学号" << StudentNumber << "不存在，是否添加？(添加输入学号名，返回输入W)" << endl;
+				cin >> StudentName;
+				if (StudentName == string("W"))
+					return;
+				pCUser->AddStudent(StudentName, StudentNumber);
+			}
+			else
+			{
+				cout << "学号<" << StudentNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
+				cin >> StudentNumber;
+				if (StudentNumber == string("W"))
+					return;
+			}
+		}
+		//判断成绩合法性
+		while (GetGP(Grade) == -1.0f)
+		{
+			cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
+				">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
+			cin >> Grade;
+			if (Grade == string("W"))
+				return;
+		}
+		g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
+		g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
+	}
 }
+
 void CInputResults::FileInput(CUser* pCUser)
 {
 	string tem;
@@ -573,7 +738,7 @@ void CRankList::Execute(CUser* pCUser)
 {
 	//等待用户按下主菜单数字键
 
-	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	char c = _getch();
 	switch (c)
 	{
@@ -624,8 +789,8 @@ void CRankList::ShowGPAList()
 	cout << "------------------GPA排行榜-------------------" << endl;
 	for (size_t i = 0; i < vGPAList.size(); i++)
 	{
-		cout << "第" << i << "名:" << vGPAList[i]->GetNumber() <<
-			"\t" << vGPAList[i]->GetName() << "\t" << vGPAList[i]->GetGPA() << endl;
+		cout << "第" << i+1 << "名:" << vGPAList[i]->GetNumber() <<
+			"\t" << vGPAList[i]->GetName() << "\t\t" << vGPAList[i]->GetGPA() << endl;
 	}
 	PressAnyKeyToContinue();
 	vGPAList.clear();
