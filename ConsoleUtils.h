@@ -15,7 +15,7 @@
 using std::cout;
 using std::endl;
 
-//默认字色可以在wincon.h中找到
+//修改输出字色
 inline void SetTextColor(WORD colors)
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);//获取标准输出句柄
@@ -23,6 +23,7 @@ inline void SetTextColor(WORD colors)
 	SetConsoleTextAttribute(hConsole, colors);//设置字色
 }
 
+//按任意键继续或按指定键继续
 inline bool PressAnyKeyToContinue(const char exception = '\0', const char *s = NULL)
 {
 	//把字色改为白色
@@ -44,6 +45,7 @@ inline bool PressAnyKeyToContinue(const char exception = '\0', const char *s = N
 	return false;
 }
 
+//给出特定菜单的输出信息
 inline void CoutMenu(enum_menu MenuNow)
 {
 	system("cls");
@@ -103,8 +105,9 @@ email:rcycyzh@163.com
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		cout << R"123(
 **************查改学生成绩**************
-1.选择查询学生
-2.返回上级菜单
+1.选择查询学生成绩
+2.修改学生信息
+3.返回上级菜单
 ****************************************
 （请按数字键进入相应功能）
 
@@ -117,8 +120,9 @@ email:rcycyzh@163.com
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		cout << R"123(
 ***************查改课程成绩*************
-1.选择查询课程
-2.返回上级菜单
+1.选择查询课程成绩
+2.修改课程信息
+3.返回上级菜单
 ****************************************
 （请按数字键进入相应功能）
 
@@ -162,7 +166,7 @@ email:rcycyzh@163.com
 		cout << R"123(
 是否确认退出？
 ****************************************
-1.是
+1.是(存档退出)
 2.否(返回上级菜单)
 ****************************************
 （请按数字键进入相应功能）
@@ -171,6 +175,13 @@ email:rcycyzh@163.com
 
 		break;
 	}
+}
+
+//清空输入缓冲区
+inline void ClearInput()
+{
+	std::cin.clear();
+	std::cin.sync();
 }
 
 #endif

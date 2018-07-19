@@ -121,6 +121,11 @@ string CSubject::GetName()const
 	return m_szName;
 }
 
+string CSubject::GetNumber()const
+{
+	return m_szNumber;
+}
+
 bool CSubject::operator==(const CSubject&A)
 {
 	if (A.m_szName == m_szName)

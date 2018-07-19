@@ -1,12 +1,13 @@
 #ifndef SBUJECT_H
 #define SBUJECT_H
+#include"ConsoleUtils.h"
 #include<list>
 #include"String.h"
 class CSubject
 {
 public:
 	CSubject();
-	CSubject(const string&Name, const string&Number,int Credit);
+	CSubject(const string&Name, const string&Number, int Credit);
 	~CSubject();
 	//设置课程号
 	void SetName(const string &s);
@@ -30,6 +31,8 @@ public:
 	int GetCredit()const;
 	//获取课程名
 	string GetName()const;
+	//获取课程号
+	string GetNumber()const;
 	//每当涉及GPA的数据被更改后调用此函数以标记
 	void Changed();
 	//改变课程名
@@ -82,7 +85,7 @@ inline float GetGP(string s)
 	else return -1.f;
 }
 
-inline string InputPa(int n=0)
+inline string InputPa(int n = 0)
 {
 	string tem;
 	std::cin >> tem;
@@ -90,6 +93,7 @@ inline string InputPa(int n=0)
 		return tem;
 	else if (tem == string("W"))
 	{
+		ClearInput();
 		return tem;
 	}
 	else

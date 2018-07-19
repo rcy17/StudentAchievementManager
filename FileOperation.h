@@ -30,6 +30,12 @@ public:
 	~CFileOperation();
 	//进行文件操作
 	void FileOpetate(string s, const char cLabel);
+	
+protected:
+	//输出流
+	ofstream m_ofstream;
+	//输入流
+	ifstream m_ifstream;
 private:
 	
 	//读取数据
@@ -44,10 +50,7 @@ private:
 	enum_error FileErrorReport();
 	//文件名
 	string m_szFileName;
-	//输出流
-	ofstream m_ofstream;
-	//输入流
-	ifstream m_ifstream;
+
 	//保存最后一次错误信息
 	enum_error m_iError;
 };

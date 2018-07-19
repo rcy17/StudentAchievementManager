@@ -135,7 +135,11 @@ float CStudent::GetGPA()
 	m_nCredits = 0;
 	for (auto iterator = m_lstSubjects.begin(); iterator != m_lstSubjects.end(); iterator++)
 	{
-		int Credit = g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber())->second)].GetCredit();
+		string Number = iterator->GetNumber();
+		auto it = g_mNumberToSubject.find(Number);
+		size_t Label = it->second;
+		int Credit = g_vSubject[Label].GetCredit();
+		//int Credit = g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber()))->second].GetCredit();
 		Sum +=GetGP(iterator->GetGrade()) * Credit;
 		m_nCredits += Credit;
 	}

@@ -80,11 +80,16 @@ private:
 	virtual void ReadData();
 	virtual void WriteData();
 	CInputResults(const CInputResults&);
+	//自由录入
 	void FreeInput(CUser* pCUser);
+	//学生成绩录入
 	void StudentInput(CUser* pCUser);
+	//课程成绩录入
 	void SubjectInput(CUser* pCUser);
+	//批量录入
 	void FileInput(CUser* pCUser);
-
+	//仅仅为了在ReadData里调用CUser的成员函数
+	CUser* m_pUser;
 public:
 
 	//这是一个有限状态机
@@ -112,7 +117,7 @@ private:
 	CQueryStudents(const CQueryStudents&);
 	void QueryStudent(CUser* pCUser);
 	void EditInfomation(CUser*pCUser, const string&StudentNumber, const size_t&StudentLable);
-
+	void EditStudent(CUser* pCUser);
 public:
 
 	//这是一个有限状态机
@@ -140,7 +145,7 @@ private:
 	CQuerySubjects(const CQuerySubjects&);
 	void QuerySubject(CUser* pCUser);
 	void EditInfomation(CUser*pCUser, const string&SubjectNumber, const size_t&SubjectLable);
-
+	void EditSubject(CUser* pCUser);
 public:
 
 	//这是一个有限状态机
