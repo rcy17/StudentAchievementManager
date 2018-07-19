@@ -25,8 +25,12 @@ private:
 	CInitialize()
 	{
 	}
+
+	//继承抽象类CFileOperation的读取函数
 	virtual void ReadData();
+
 	virtual void WriteData();
+
 	CInitialize(const CInitialize&);
 
 public:
@@ -53,7 +57,6 @@ private:
 
 	CMainMenu(){}
 
-
 	CMainMenu(const CMainMenu&);
 
 public:
@@ -77,17 +80,25 @@ class CInputResults : public CState,public CFileOperation
 private:
 
 	CInputResults(){}
+
+	CInputResults(const CInputResults&);
+
+	//继承抽象类CFileOperation的读取函数
 	virtual void ReadData();
 	virtual void WriteData();
-	CInputResults(const CInputResults&);
+
 	//自由录入
 	void FreeInput(CUser* pCUser);
+
 	//学生成绩录入
 	void StudentInput(CUser* pCUser);
+
 	//课程成绩录入
 	void SubjectInput(CUser* pCUser);
+
 	//批量录入
 	void FileInput(CUser* pCUser);
+
 	//仅仅为了在ReadData里调用CUser的成员函数
 	CUser* m_pUser;
 public:
@@ -115,9 +126,16 @@ private:
 	}
 
 	CQueryStudents(const CQueryStudents&);
+
+	//进入课程查询菜单
 	void QueryStudent(CUser* pCUser);
+
+	//改动课程成绩信息
 	void EditInfomation(CUser*pCUser, const string&StudentNumber, const size_t&StudentLable);
+
+	//改动学生信息
 	void EditStudent(CUser* pCUser);
+
 public:
 
 	//这是一个有限状态机
@@ -143,9 +161,16 @@ private:
 	}
 
 	CQuerySubjects(const CQuerySubjects&);
+
+	//进入查询学生菜单
 	void QuerySubject(CUser* pCUser);
+
+	//改动学生成绩信息
 	void EditInfomation(CUser*pCUser, const string&SubjectNumber, const size_t&SubjectLable);
+
+	//改动课程信息
 	void EditSubject(CUser* pCUser);
+
 public:
 
 	//这是一个有限状态机
@@ -169,10 +194,16 @@ private:
 	CRankList()
 	{
 	}
-	void ShowGPAList();
-	void ShowCreditList();
-	void ShowFailList();
 	CRankList(const CRankList&);
+
+	//展示GPA排行榜
+	void ShowGPAList();
+
+	//展示学分排行榜
+	void ShowCreditList();
+
+	//展示挂科记录
+	void ShowFailList();
 
 public:
 
@@ -198,6 +229,8 @@ private:
 	{
 	}
 	CClear(const CClear&);
+
+	//清除函数
 	void Clear(CUser* pCUser);
 public:
 
@@ -223,9 +256,11 @@ private:
 	{
 	}
 	virtual void ReadData();
-	virtual void WriteData();
+
 	CExit(const CExit&);
 
+	//继承抽象类CFileOperation的写入函数
+	virtual void WriteData();
 public:
 
 	//这是一个有限状态机

@@ -1,5 +1,6 @@
 #include "FileOperation.h"
 #include "ConsoleUtils.h"
+
 CFileOperation::CFileOperation()
 {
 
@@ -7,9 +8,11 @@ CFileOperation::CFileOperation()
 
 CFileOperation::~CFileOperation()
 {
+	//清除文件名信息
 	m_szFileName.clear();
 }
 
+//一系列文件操作
 void CFileOperation::FileOpetate(string s, const char cLabel)
 {
 	m_szFileName = s;
@@ -28,6 +31,7 @@ void CFileOperation::FileOpetate(string s, const char cLabel)
 	CloseFile();
 }
 
+//打开文件
 void CFileOperation::OpenFile(const char cLabel)
 {
 	switch (cLabel)
@@ -47,6 +51,7 @@ void CFileOperation::OpenFile(const char cLabel)
 		FileErrorReport();
 }
 
+//关闭文件
 void CFileOperation::CloseFile()
 {
 	if (m_ofstream)
@@ -55,17 +60,8 @@ void CFileOperation::CloseFile()
 		m_ifstream.close();
 
 }
-/*
-void CFileOperation::ReadData()
-{
-	return;
-}
 
-void CFileOperation::WriteData()
-{
-	return;
-}
-*/
+//错误报告
 enum_error CFileOperation::FileErrorReport()
 {
 	switch (m_iError)

@@ -24,9 +24,6 @@ public:
 
   //状态退出时执行的函数
   virtual void Exit(CUser*)=0;
-
 };
-
-
 
 #endif

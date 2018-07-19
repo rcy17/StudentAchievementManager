@@ -6,9 +6,10 @@ String::String(string s) :string(s)
 
 String::~String()
 {
+
 }
 
-
+//读取数据中的学号/课程号
 string String::GetNumber()
 {
 	string tem = *this;
@@ -23,6 +24,7 @@ string String::GetNumber()
 	return tem;
 }
 
+//读取数据中的成绩
 string String::GetGrade()
 {
 	string tem = *this;

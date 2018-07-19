@@ -26,19 +26,13 @@ inline void SetTextColor(WORD colors)
 //按任意键继续或按指定键继续
 inline bool PressAnyKeyToContinue(const char exception = '\0', const char *s = NULL)
 {
-	//把字色改为白色
-	/*SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED | FOREGROUND_GREEN);*/
-
-	
-
 	if (exception == '\0')
 		std::cout << "\n按任意键继续" << std::endl;
 	else
 		std::cout << s << std::endl;
-	//while (!_kbhit())	{}
-
-	//若输入了预定的例外键则返回真
+	//等待用户按下一个键
 	char c = _getch();
+	//若输入了预定的例外键则返回真
 	if (c == exception)
 		return true;
 	//一般情况下返回假
