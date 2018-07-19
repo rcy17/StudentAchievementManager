@@ -289,7 +289,13 @@ void CInputResults::ReadData()
 {
 	//先录入课程数量
 	size_t SubjectCount;
-	cin >> SubjectCount;
+	m_ifstream >> SubjectCount;
+	if (m_ifstream.fail())
+	{
+		cout << "读入数字失败，中止录入!" << endl;
+		PressAnyKeyToContinue();
+		return;
+	}
 	if (SubjectCount < 0)
 	{
 		cout << "课程数小于0，中止录入!" << endl;
@@ -302,10 +308,10 @@ void CInputResults::ReadData()
 		string SubjectNumber, SubjectName;
 		int Credit;
 		size_t StudentCount;
-		cin >> SubjectNumber;
-		cin >> SubjectName;
-		cin >> Credit;
-		cin >> StudentCount;
+		m_ifstream >> SubjectNumber;
+		m_ifstream >> SubjectName;
+		m_ifstream >> Credit;
+		m_ifstream >> StudentCount;
 		if (!(m_pUser->CheckSubjectNumber(SubjectNumber) && m_pUser->CheckCredit(Credit) && StudentCount >= 0))
 		{
 			cout << "第" << i + 1 << "门课程:课程号" << SubjectNumber << "课程名" << SubjectName <<
@@ -324,8 +330,9 @@ void CInputResults::ReadData()
 		{
 			//读入每个学生的学号，姓名，字母表示的成绩
 			string StudentNumber, StudentName, Grade;
-			cin >> StudentNumber;
-			cin >> StudentName;
+			m_ifstream >> StudentNumber;
+			m_ifstream >> StudentName;
+			m_ifstream >> Grade;
 			if (!(m_pUser->CheckStudentNumber(StudentNumber) && GetGP(Grade) != -1.0f))
 			{
 				cout << "课程号为" << SubjectNumber << "的第" << j + 1 << "个学生信息:学号" << StudentNumber <<
@@ -699,6 +706,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 //CInputResults批量录入界面
 void CInputResults::FileInput(CUser* pCUser)
 {
+	system("cls");
 	cout << "注:批量录入必须严格按照格式书写的文本文档，先输入需录入成绩的课程数量，依次输入课程号，课程名，" <<
 		"课程学分，添加人数，每个学生的学号，姓名，字母表示的成绩，各个信息之间用空格隔开" << endl;
 	cout << "请输入批量录入的完整文件名(或输入W返回)" << endl;
@@ -744,7 +752,7 @@ void CQueryStudents::Execute(CUser* pCUser)
 {
 	//等待用户按下主菜单数字键
 
-	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	char c = _getch();
 	switch (c)
 	{
@@ -799,8 +807,8 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 		for (auto iterator = g_vStudent[StudentLabel].m_lstSubjects.begin(); iterator != g_vStudent[StudentLabel].m_lstSubjects.end(); iterator++)
 		{
 			//打印出各科课程号，课程名，成绩
-			cout << iterator->GetNumber() << g_vSubject[pCUser->FindSubject(iterator->GetNumber())].GetName() << 
-				iterator->GetGrade() << endl;
+			cout << iterator->GetNumber() << "\t"<<g_vSubject[pCUser->FindSubject(iterator->GetNumber())].GetName() << 
+				" "<<iterator->GetGrade() << endl;
 		}
 
 		//输出课程均分
@@ -810,7 +818,7 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 		else
 			cout << "该学生GPA为" << GPA << endl;
 		cout << "是否需要删改或增添成绩信息?" << endl;
-		while (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键编辑信息。"))
+		while (!PressAnyKeyToContinue(27, "按ESC返回,按其他任意键编辑信息。"))
 		{
 			EditInfomation(pCUser, StudentNumber, StudentLabel);
 

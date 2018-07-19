@@ -60,7 +60,7 @@ int CStudent::GetCredits()
 	//遍历所修课程，累加学分，如果挂科则不计入学分
 	for (auto iterator = m_lstSubjects.begin(); iterator != m_lstSubjects.end(); iterator++)
 	{
-		if (iterator->GetGrade == string("F"))
+		if (iterator->GetGrade() == string("F"))
 			continue;
 		m_nCredits += g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber()))->second].GetCredit();
 	}

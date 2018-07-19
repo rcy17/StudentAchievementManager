@@ -28,7 +28,7 @@ string String::GetNumber()
 string String::GetGrade()
 {
 	string tem = *this;
-	for (auto iterator = tem.begin(); iterator != tem.end(); )
+	for (auto iterator = tem.begin()+1; iterator != tem.end(); )
 	{
 		if (*iterator <= '9' && *iterator >= '0')
 		{
