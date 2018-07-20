@@ -31,7 +31,7 @@ public:
 	string GetNumber()const;
 
 	//向链表添加某课成绩
-	void AddSubjectGrade(const string &SubjectNumber,const string& Grade);
+	void AddSubjectGrade(const string &SubjectNumber,const string& Grade,bool CoverFlag=0);
 
 	//从链表中删除某课成绩
 	void DeleteSubjectGrade(const string &SubjectNumber);

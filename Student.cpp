@@ -75,11 +75,11 @@ float CStudent::GetGPA()
 	//遍历所修课程，累加绩点与学分，并求均值
 	for (auto iterator = m_lstSubjects.begin(); iterator != m_lstSubjects.end(); iterator++)
 	{
-		string Number = iterator->GetNumber();
+		/*string Number = iterator->GetNumber();
 		auto it = g_mNumberToSubject.find(Number);
 		size_t Label = it->second;
-		int Credit = g_vSubject[Label].GetCredit();
-		//int Credit = g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber()))->second].GetCredit();
+		int Credit = g_vSubject[Label].GetCredit();*/
+		int Credit = g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber()))->second].GetCredit();
 		float GP = GetGP(iterator->GetGrade());
 		
 		//若某课PF，则不计入计算
@@ -98,15 +98,23 @@ float CStudent::GetGPA()
 }
 
 //向链表添加某课成绩
-void CStudent::AddSubjectGrade(const string &SubjectNumber, const string &Grade)
+void CStudent::AddSubjectGrade(const string &SubjectNumber, const string &Grade, bool CoverFlag)
 {
 	//先遍历链表看看该课程号是否已经出现
 	for (auto iterator = m_lstSubjects.begin(); iterator != m_lstSubjects.end(); iterator++)
 	{
+		//若已经出现，再看看成绩是否矛盾
+		if (iterator->GetGrade() == Grade&&!CoverFlag)
+		{
+			//若不矛盾，或矛盾但开启了覆盖模式，则直接跳过
+			return;
+		}
+
+		//若矛盾，则询问是否修改
 		if (iterator->GetNumber() == SubjectNumber)
 		{
 			cout << "该学生已有课程号为" << SubjectNumber << "的科目成绩,为" << iterator->GetGrade() <<
-				"，是否修改？" << endl;
+				"，是否修改为" <<"?" <<endl;
 			if (PressAnyKeyToContinue('\r', "按Enter键修改，按其他任意键放弃操作"))
 			{
 				iterator->assign(SubjectNumber + Grade);

@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------
 #include "State.h"
 #include "FileOperation.h"
+#include "Password.h"
 
-class CFileOperation;
 class CUser;
 
 
@@ -18,7 +18,7 @@ class CUser;
 //
 //  欢迎界面，同时读取文件
 //------------------------------------------------------------------------
-class CInitialize : public CState, public CFileOperation
+class CInitialize : public CState, public CPassword
 {
 private:
 

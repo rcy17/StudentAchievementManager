@@ -9,18 +9,23 @@
 //------------------------------------------------------------------------
 #include"Menus.h"
 
+#define NOMINMAX
 #include <windows.h>
 #include <conio.h>
 #include <iostream>
-using std::cout;
-using std::endl;
+#include <limits>
+using namespace std;
 
-//修改输出字色
+
+//通过输入的颜色号修改输出字色，更改显示
+//使用这种方法修改背景色后需要刷新一次才
+//会普及到整个控制台，因而只用于修改前景
 inline void SetTextColor(WORD colors)
 {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);//获取标准输出句柄
-
-	SetConsoleTextAttribute(hConsole, colors);//设置字色
+	//获取标准输出句柄
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	//设置字色
+	SetConsoleTextAttribute(hConsole, colors);
 }
 
 //按任意键继续或按指定键继续
@@ -31,7 +36,8 @@ inline bool PressAnyKeyToContinue(const char exception = '\0', const char *s = N
 	else
 		std::cout << s << std::endl;
 	//等待用户按下一个键
-	char c = _getch();
+	char c;
+	while ((c = _getch()) == '\0');
 	//若输入了预定的例外键则返回真
 	if (c == exception)
 		return true;
@@ -174,8 +180,9 @@ inline void CoutMenu(enum_menu MenuNow)
 //清空输入缓冲区
 inline void ClearInput()
 {
-	std::cin.clear();
-	std::cin.sync();
+	cin.clear();
+	//cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	cin.ignore(cin.rdbuf()->in_avail());
 }
 
 #endif

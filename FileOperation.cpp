@@ -37,7 +37,7 @@ void CFileOperation::OpenFile(const char cLabel)
 	switch (cLabel)
 	{
 	case 'r':
-		m_ifstream.open(m_szFileName, ios_base::in|| ios_base::_Nocreate);
+		m_ifstream.open(m_szFileName, ios_base::in || ios_base::_Nocreate);
 		if (!m_ifstream)
 			m_iError = IFSTREAM_OPEN_FAIL;
 		break;
@@ -61,6 +61,20 @@ void CFileOperation::CloseFile()
 
 }
 
+//判断是否有错误
+bool CFileOperation::Good()
+{
+	//若无错误，则返回值为真
+	if (!m_iError)
+		return true;
+	//若右错，则错误清除并返回假
+	else
+	{
+		m_iError = SMOOTH;
+		return false;
+	}
+}
+
 //错误报告
 enum_error CFileOperation::FileErrorReport()
 {
@@ -74,7 +88,7 @@ enum_error CFileOperation::FileErrorReport()
 		if (PressAnyKeyToContinue('\r', "按Enter键重试，按其他任意键继续。"))
 		{
 			m_iError = SMOOTH;
-			OpenFile( 'w');
+			OpenFile('w');
 		}
 		else return OFSTREAM_OPEN_FAIL;
 		break;

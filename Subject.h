@@ -25,7 +25,7 @@ public:
 	void SetNumber(const string &s);
 
 	//向链表添加某学生该科成绩
-	void AddStudentGrade(const string &StudentNumber, const string &Grade);
+	void AddStudentGrade(const string &StudentNumber, const string &Grade,bool CoverFlag=0);
 
 	//从链表删除某学生该科成绩
 	void DeleteStudentGrade(const string &StudentNumber);
@@ -72,7 +72,7 @@ private:
 
 
 //从字母绩点获取数字显示，当输入非法时返回-1.0f
-inline float GetGP(string s)
+inline float GetGP(const string&s)
 {
 	if (s == string("A+"))
 		return 4.0f;
@@ -112,10 +112,10 @@ inline string InputPa(int n = 0)
 	std::cin >> tem;
 	if (GetGP(tem) != -1.0f)
 		return tem;
-	else if (tem == string("W"))
+	else if (tem == string("W")||tem==string("w"))
 	{
 		ClearInput();
-		return tem;
+		return string("W");
 	}
 	else
 	{

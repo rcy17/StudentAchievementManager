@@ -35,14 +35,24 @@ void CSubject::SetNumber(const string &s)
 }
 
 //向链表添加某学生该科成绩
-void CSubject::AddStudentGrade(const string &StudentNumber, const string &Grade)
+void CSubject::AddStudentGrade(const string &StudentNumber, const string &Grade, bool CoverFlag)
 {
 	//先遍历链表看看该学号是否已经出现
 	for (auto iterator = m_lstStudents.begin(); iterator != m_lstStudents.end(); iterator++)
 	{
+		//查看是否已有此人成绩
 		if (iterator->GetNumber() == StudentNumber)
 		{
-			cout << "学号为" << StudentNumber << "已有该科成绩,为" << iterator->GetGrade() << "，是否修改？" << endl;
+			//如成绩已录入，则判断前后是否一致
+			if (iterator->GetGrade() == Grade && !CoverFlag)
+			{
+				//若一致或不一致但是开启了覆盖模式，则不作响应
+				return;
+			}
+
+			//不一致则询问是否修改
+			cout << "学号为" << StudentNumber << "已有该科成绩,为" << iterator->GetGrade() <<
+				"，是否修改为" << Grade << "?" << endl;
 			if (PressAnyKeyToContinue('\r', "按Enter键修改，按其他任意键放弃操作"))
 			{
 				iterator->assign(StudentNumber + Grade);

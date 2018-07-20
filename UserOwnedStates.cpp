@@ -1,7 +1,6 @@
 #include "UserOwnedStates.h"
 #include "User.h"
 #include "ConsoleUtils.h"
-
 #include<algorithm>
 #include <iostream>
 using std::cout;
@@ -37,8 +36,48 @@ void CInitialize::Execute(CUser* pCUser)
 {
 	//先读取文件数据
 	FileOpetate("SaveData.dat", 'r');
+
+	//读取成功后输入密码
+	if (Good())
+	{
+		m_ifstream.open("key");
+
+		//若密匙文件不存在，禁止访问
+		if (!m_ifstream)
+		{
+			cout << "缺少相应密匙文件，不可访问!" << endl;
+			PressAnyKeyToContinue();
+			exit(0);
+		}
+		CPassword::ReadData();
+		m_ifstream.close();
+		cout << "请输入登陆密码:";
+		InputWord();
+		cout << "是否需要重设密码？" << endl;
+		if (PressAnyKeyToContinue('\r', "按Enter键重设密码，按其他任意键跳过"))
+		{
+			SetWord();
+			m_ofstream.open("key");
+			CPassword::WriteData();
+			m_ofstream.close();
+			cout << "修改成功!"<<endl;
+		}
+	}
+
+	//若是第一次打开，应当先设置密码
+	else
+	{
+		cout << "首次登陆，请设置登陆密码！" << endl;
+		SetWord();
+		m_ofstream.open("key");
+		CPassword::WriteData();
+		m_ofstream.close();
+		cout << "设置成功!" << endl;
+	}
+
 	//此处是欢迎界面
 	CoutMenu(WELCOME);
+
 	//进入主菜单
 	pCUser->ChangeCState(CMainMenu::Instance());
 
@@ -174,7 +213,12 @@ void CMainMenu::Execute(CUser* pCUser)
 		pCUser->ChangeCState(CClear::Instance());
 		break;
 	case '6':
+	case 27:
+		//按6或ESC进入退出界面
 		pCUser->ChangeCState(CExit::Instance());
+		break;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
 		break;
 	default:
 		cout << "\a\r请按下有效按键";
@@ -241,6 +285,9 @@ void CInputResults::Execute(CUser* pCUser)
 		case 27:
 			//按下5或者ESC返回主菜单
 			pCUser->ChangeCState(CMainMenu::Instance());
+			break;
+		case '\0':
+			//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
 			break;
 		default:
 			cout << "\a\r请按下有效按键";
@@ -346,8 +393,8 @@ void CInputResults::ReadData()
 			{
 				m_pUser->AddStudent(StudentName, StudentNumber);
 			}
-			g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
-			g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
+			g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade,true);
+			g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade,true);
 		}
 	}
 }
@@ -369,7 +416,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 
 	//录入学生号并判断退出
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W")||StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -377,7 +424,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 
 	//录入课程号并判断推出
 	cin >> SubjectNumber;
-	if (SubjectNumber == string("W"))
+	if (SubjectNumber == string("W")|| StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -385,7 +432,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 
 	//录入成绩并判断退出
 	cin >> Grade;
-	if (Grade == string("W"))
+	if (Grade == string("W") || Grade == string("w"))
 	{
 		ClearInput();
 		return;
@@ -398,7 +445,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 		{
 			cout << "学号" << StudentNumber << "不存在，是否添加？(添加输入学生姓名，返回输入W)" << endl;
 			cin >> StudentName;
-			if (StudentName == string("W"))
+			if (StudentName == string("W") || StudentName == string("w"))
 			{
 				ClearInput();
 				return;
@@ -409,7 +456,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 		{
 			cout << "学号<" << StudentNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
 			cin >> StudentNumber;
-			if (StudentNumber == string("W"))
+			if (StudentNumber == string("W") || StudentNumber == string("w"))
 			{
 				ClearInput();
 				return;
@@ -425,7 +472,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 			int Credit;
 			cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加输入课程名与学分数，返回输入W)" << endl;
 			cin >> SubjectName;
-			if (SubjectName == string("W"))
+			if (SubjectName == string("W") || SubjectName == string("w"))
 			{
 				ClearInput();
 				return;
@@ -443,7 +490,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 		{
 			cout << "课程号<" << SubjectNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
 			cin >> SubjectNumber;
-			if (SubjectNumber == string("W"))
+			if (SubjectNumber == string("W") || SubjectNumber == string("w"))
 			{
 				ClearInput();
 				return;
@@ -457,7 +504,7 @@ void CInputResults::FreeInput(CUser* pCUser)
 		cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
 			">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
 		cin >> Grade;
-		if (Grade == string("W"))
+		if (Grade == string("W") || Grade == string("w"))
 		{
 			ClearInput();
 			return;
@@ -479,7 +526,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 	//录入学号并判断返回
 	ClearInput();
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W") || StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -491,7 +538,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 	{
 		cout << "无效的学号!请重新输入或输入W返回!" << endl;
 		cin >> StudentNumber;
-		if (StudentNumber == string("W"))
+		if (StudentNumber == string("W") || StudentNumber == string("w"))
 		{
 			ClearInput();
 			return;
@@ -505,7 +552,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 		cout << "未找到学号为" << StudentNumber << "的学生，请输入姓名添加学生或输入W返回" << endl;
 		string StudentName;
 		cin >> StudentName;
-		if (StudentName == string("W"))
+		if (StudentName == string("W") || StudentName == string("w"))
 		{
 			ClearInput();
 			return;
@@ -524,7 +571,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 
 		//录入课程号并判断返回
 		cin >> SubjectNumber;
-		if (SubjectNumber == string("W"))
+		if (SubjectNumber == string("W") || SubjectNumber == string("w"))
 		{
 			ClearInput();
 			return;
@@ -532,7 +579,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 
 		//录入成绩并判断返回
 		cin >> Grade;
-		if (Grade == string("W"))
+		if (Grade == string("W")||Grade == string("w"))
 		{
 			ClearInput();
 			return;
@@ -545,7 +592,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 			{
 				cout << "课程号" << SubjectNumber << "不存在，是否添加？(添加分别输入课程名和学分，返回输入W)" << endl;
 				cin >> SubjectName;
-				if (SubjectName == string("W"))
+				if (SubjectName == string("W")|| SubjectName == string("w"))
 				{
 					ClearInput();
 					return;
@@ -563,7 +610,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 			{
 				cout << "课程号<" << SubjectNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
 				cin >> SubjectNumber;
-				if (SubjectNumber == string("W"))
+				if (SubjectNumber == string("W")|| SubjectNumber == string("w"))
 				{
 					ClearInput();
 					return;
@@ -577,7 +624,7 @@ void CInputResults::StudentInput(CUser* pCUser)
 			cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
 				">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
 			cin >> Grade;
-			if (Grade == string("W"))
+			if (Grade == string("W") || Grade == string("w"))
 			{
 				ClearInput();
 				return;
@@ -598,7 +645,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 	//录入课程号并判断返回
 	ClearInput();
 	cin >> SubjectNumber;
-	if (SubjectNumber == string("W"))
+	if (SubjectNumber == string("W")|| SubjectNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -610,7 +657,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 	{
 		cout << "无效的课程号!请重新输入或输入W返回!" << endl;
 		cin >> SubjectNumber;
-		if (SubjectNumber == string("W"))
+		if (SubjectNumber == string("W") || SubjectNumber == string("w"))
 		{
 			ClearInput();
 			return;
@@ -624,7 +671,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 		cout << "未找到课程为" << SubjectNumber << "的课程，请输入课程名与学分(空格隔开)添加课程或输入W返回" << endl;
 		string SubjectName;
 		cin >> SubjectName;
-		if (SubjectName == string("W"))
+		if (SubjectName == string("W") || SubjectName == string("w"))
 		{
 			ClearInput();
 			return;
@@ -648,13 +695,13 @@ void CInputResults::SubjectInput(CUser* pCUser)
 		string StudentNumber, StudentName, Grade;
 		size_t StudentLabel;
 		cin >> StudentNumber;
-		if (StudentNumber == string("W"))
+		if (StudentNumber == string("W") || StudentNumber == string("w"))
 		{
 			ClearInput();
 			return;
 		}
 		cin >> Grade;
-		if (Grade == string("W"))
+		if (Grade == string("W") || Grade == string("w"))
 		{
 			ClearInput();
 			return;
@@ -667,7 +714,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 			{
 				cout << "学号" << StudentNumber << "不存在，是否添加？(添加输入学号名，返回输入W)" << endl;
 				cin >> StudentName;
-				if (StudentName == string("W"))
+				if (StudentName == string("W") || StudentName == string("w"))
 				{
 					ClearInput();
 					return;
@@ -678,7 +725,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 			{
 				cout << "学号<" << StudentNumber << ">不合法，请重新输入！(或输入W返回)" << endl;
 				cin >> StudentNumber;
-				if (StudentNumber == string("W"))
+				if (StudentNumber == string("W") || StudentNumber == string("w"))
 				{
 					ClearInput();
 					return;
@@ -692,7 +739,7 @@ void CInputResults::SubjectInput(CUser* pCUser)
 			cout << "对于学号" << StudentNumber << "课程号" << SubjectNumber << "输入的成绩<" << Grade <<
 				">无效，请输入一个字母成绩（如A+,F）,或输入W返回" << endl;
 			cin >> Grade;
-			if (Grade == string("W"))
+			if (Grade == string("W") || Grade == string("w"))
 			{
 				ClearInput();
 				return;
@@ -707,15 +754,15 @@ void CInputResults::SubjectInput(CUser* pCUser)
 void CInputResults::FileInput(CUser* pCUser)
 {
 	system("cls");
-	cout << "注:批量录入必须严格按照格式书写的文本文档，先输入需录入成绩的课程数量，依次输入课程号，课程名，" <<
-		"课程学分，添加人数，每个学生的学号，姓名，字母表示的成绩，各个信息之间用空格隔开" << endl;
+	cout << "注:批量录入必须严格按照格式书写的文本文档，先输入需录入成绩的课程数量\n然后依次输入课程号，课程名，" <<
+		"课程学分，添加人数，每个学生的学号，姓名，字母表示的成绩\n各个信息之间用空格隔开，且文件必须为ANSI编码" << endl;
 	cout << "请输入批量录入的完整文件名(或输入W返回)" << endl;
 	string szFileName;
 
 	//输入文件名并判断返回
 	ClearInput();
 	cin >> szFileName;
-	if (szFileName == string("W"))
+	if (szFileName == string("W") || szFileName == string("w"))
 	{
 		ClearInput();
 		return;
@@ -773,6 +820,9 @@ void CQueryStudents::Execute(CUser* pCUser)
 		//按下3或者ESC回到主菜单
 		pCUser->ChangeCState(CMainMenu::Instance());
 		break;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
+		break;
 	default:
 		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		cout << "\a\r请按下有效按键";
@@ -795,7 +845,7 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 	//输入学号并判断返回
 	ClearInput();
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W") || StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -840,7 +890,7 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 			string StudentName;
 			cout << "请输入姓名(或输入W返回):";
 			cin >> StudentName;
-			if (StudentName == string("W"))
+			if (StudentName == string("W") || StudentName == string("w"))
 			{
 				ClearInput();
 				QueryStudent(pCUser);
@@ -865,7 +915,7 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 	//输入课程号并判断返回
 	ClearInput();
 	cin >> SubjectNumber;
-	if (SubjectNumber == string("W"))
+	if (SubjectNumber == string("W") || SubjectNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -900,7 +950,7 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 		{
 			cout << "未找到课程号为" << SubjectNumber << "的课程成绩，如果希望添加成绩请输入成绩（大写字母），返回请输入W:" << endl;
 			string Grade = InputPa();
-			if (Grade != string("W"))
+			if (Grade != string("W") )
 			{
 				g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
 				g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
@@ -912,7 +962,6 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 	else
 	{
 		cout << "未找到课程号为" << SubjectNumber << "的课程信息，如果希望添加该课程请前往成绩录入菜单！" << endl;
-		PressAnyKeyToContinue();
 	}
 }
 
@@ -920,13 +969,26 @@ void CQueryStudents::EditInfomation(CUser*pCUser, const string&StudentNumber, co
 void CQueryStudents::EditStudent(CUser* pCUser)
 {
 	system("cls");
+
+	//若录入的学生总数小于一百门，则将所有学生信息打印出来
+	if (g_vStudent.size() < 102)
+	{
+		for (auto iterator = g_vStudent.begin() + 1; iterator != g_vStudent.end(); iterator++)
+		{
+			cout << iterator->GetNumber() << " " << iterator->GetName() << endl;
+		}
+	}
+	else
+	{
+		cout << "超过一百个学生，此处不打印课程信息" << endl;
+	}
 	cout << "请输入待修改学生的学号(或输入W退出):";
 	string StudentNumber;
 
 	//读入学号并判断返回
 	ClearInput();
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W") || StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -940,7 +1002,7 @@ void CQueryStudents::EditStudent(CUser* pCUser)
 		cout << "请输入更改后的姓名(注:学号作为唯一身份标识不应支持修改，输入W退出修改):";
 		string Name;
 		cin >> Name;
-		if (Name == string("W"))
+		if (Name == string("W") || Name == string("w"))
 		{
 			ClearInput();
 			return;
@@ -959,7 +1021,7 @@ void CQueryStudents::EditStudent(CUser* pCUser)
 			string StudentName;
 			cout << "请输入姓名(或输入W返回):";
 			cin >> StudentName;
-			if (StudentName == string("W"))
+			if (StudentName == string("W") || StudentName == string("w"))
 			{
 				ClearInput();
 				QueryStudent(pCUser);
@@ -1017,11 +1079,14 @@ void CQuerySubjects::Execute(CUser* pCUser)
 		EditSubject(pCUser);
 		//返回课程查询主菜单
 		CoutMenu(SUBJECTS);
-
+		break;
 	case '3':
 	case 27:
 		//按下3或者ESC返回主菜单
 		pCUser->ChangeCState(CMainMenu::Instance());
+		break;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
 		break;
 	default:
 		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
@@ -1046,7 +1111,7 @@ void CQuerySubjects::QuerySubject(CUser* pCUser)
 	//输入课程号并判断返回
 	ClearInput();
 	cin >> SubjectNumber;
-	if (SubjectNumber == string("W"))
+	if (SubjectNumber == string("W") || SubjectNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -1103,7 +1168,7 @@ void CQuerySubjects::EditInfomation(CUser*pCUser, const string&SubjectNumber, co
 	//读入学号并判断返回
 	ClearInput();
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W") || StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -1153,12 +1218,12 @@ void CQuerySubjects::EditInfomation(CUser*pCUser, const string&SubjectNumber, co
 		cout << "未找到学号为" << StudentNumber << "的学生的信息，如果希望添加该学生请先输入学生姓名以添加学生信息，返回请输入W:" << endl;
 		string Name;
 		cin >> Name;
-		if (Name != string("W"))
+		if (Name != string("W") && Name != string("w"))
 		{
 			pCUser->AddStudent(Name, StudentNumber);
 			cout << "请输入其成绩(返回请输入W):";
 			string Grade = InputPa();
-			if (Grade != string("W"))
+			if (Grade != string("W")&& Grade!= string("w"))
 			{
 				g_vStudent[StudentLabel].AddSubjectGrade(SubjectNumber, Grade);
 				g_vSubject[SubjectLabel].AddStudentGrade(StudentNumber, Grade);
@@ -1176,13 +1241,26 @@ void CQuerySubjects::EditInfomation(CUser*pCUser, const string&SubjectNumber, co
 void CQuerySubjects::EditSubject(CUser* pCUser)
 {
 	system("cls");
+
+	//若录入的课程总数小于一百门，则将所有课程打印出来
+	if (g_vSubject.size() < 102)
+	{
+		for (auto iterator = g_vSubject.begin() + 1; iterator != g_vSubject.end(); iterator++)
+		{
+			cout << iterator->GetNumber() << " " << iterator->GetName() << " " << iterator->GetCredit() << "学分" << endl;
+		}
+	}
+	else
+	{
+		cout << "超过一百门课，此处不打印课程信息" << endl;
+	}
 	cout << "请输入待修改课程的课程号(或输入W退出):";
 	string Number;
 
 	//读入课程号并判断返回
 	ClearInput();
 	cin >> Number;
-	if (Number == string("W"))
+	if (Number == string("W") ||Number == string("w"))
 	{
 		ClearInput();
 		return;
@@ -1198,7 +1276,7 @@ void CQuerySubjects::EditSubject(CUser* pCUser)
 		string Name;
 		int Credit;
 		cin >> Name;
-		if (Name == string("W"))
+		if (Name == string("W") || Name == string("w"))
 		{
 			ClearInput();
 			return;
@@ -1224,7 +1302,7 @@ void CQuerySubjects::EditSubject(CUser* pCUser)
 			cout << "请输入课程名与学分(空格隔开)添加课程或输入W返回" << endl;
 			string SubjectName;
 			cin >> SubjectName;
-			if (SubjectName == string("W"))
+			if (SubjectName == string("W") || SubjectName == string("w"))
 			{
 				ClearInput();
 				return;
@@ -1294,6 +1372,9 @@ void CRankList::Execute(CUser* pCUser)
 		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		pCUser->ChangeCState(CMainMenu::Instance());
 		return;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
+		break;
 	default:
 		cout << "\a\r请按下有效按键";
 		break;
@@ -1324,6 +1405,14 @@ void CRankList::ShowGPAList()
 	system("cls");
 	vector<CStudent*>vGPAList;
 
+	//若尚无学生信息则不显示
+	if (g_vStudent.size() == 1)
+	{
+		cout << "暂无有效学生信息!" << endl;
+		PressAnyKeyToContinue();
+		return;
+	}
+
 	//遍历所有学生，将指向他们的指针加入vector
 	for (auto iterator = g_vStudent.begin() + 1; iterator != g_vStudent.end(); iterator++)
 	{
@@ -1332,7 +1421,7 @@ void CRankList::ShowGPAList()
 
 	//对学生成绩进行排序并输出
 	sort(&(vGPAList[0]), &(vGPAList[vGPAList.size() - 1]), CompareGPAForStudent);
-	cout << "------------------GPA排行榜-------------------" << endl;
+	cout << "--------------------------GPA排行榜---------------------------" << endl;
 	for (size_t i = 0; i < vGPAList.size(); i++)
 	{
 		cout << "第" << i + 1 << "名:" << vGPAList[i]->GetNumber() <<
@@ -1361,6 +1450,14 @@ void CRankList::ShowCreditList()
 	system("cls");
 	vector<CStudent*>vCreditsList;
 
+	//若尚无学生信息则不显示
+	if (g_vStudent.size() == 1)
+	{
+		cout << "暂无有效学生信息!" << endl;
+		PressAnyKeyToContinue();
+		return;
+	}
+
 	//遍历所有学生，将指向他们的指针加入vector
 	for (auto iterator = g_vStudent.begin() + 1; iterator != g_vStudent.end(); iterator++)
 	{
@@ -1369,10 +1466,10 @@ void CRankList::ShowCreditList()
 
 	//对学生学分进行排序并打印
 	sort(&(vCreditsList[0]), &(vCreditsList[vCreditsList.size() - 1]), CompareCreditsForStudent);
-	cout << "--------------------学分排行榜-------------------" << endl;
+	cout << "----------------------学分排行榜-----------------------" << endl;
 	for (size_t i = 0; i < vCreditsList.size(); i++)
 	{
-		cout << "第" << i << "名:" << vCreditsList[i]->GetNumber() <<
+		cout << "第" << i+1 << "名:" << vCreditsList[i]->GetNumber() <<
 			"\t" << vCreditsList[i]->GetName() << "\t" << vCreditsList[i]->GetCredits() << endl;
 	}
 	PressAnyKeyToContinue();
@@ -1383,7 +1480,7 @@ void CRankList::ShowCreditList()
 void CRankList::ShowFailList()
 {
 	system("cls");
-	cout << "----------------挂科记录--------------------" << endl;
+	cout << "------------------------------挂科记录----------------------------------" << endl;
 
 	//遍历所有学生
 	for (auto IteratorForStudent = g_vStudent.begin() + 1; IteratorForStudent != g_vStudent.end(); IteratorForStudent++)
@@ -1395,8 +1492,8 @@ void CRankList::ShowFailList()
 			if (IteratorForSubject->GetGrade() == string("F"))
 			{
 				//输出学号、姓名、课程号、课程名
-				cout << "学号" << IteratorForStudent->GetNumber() << "  姓名" << IteratorForStudent->GetName() <<
-					":" << "\t课程号" << IteratorForSubject->GetNumber() << " 课程名：" <<
+				cout << "学号" << IteratorForStudent->GetNumber() << "  姓名:" << IteratorForStudent->GetName() <<
+					 "\t课程号" << IteratorForSubject->GetNumber() << " 课程名:" <<
 					g_vSubject[g_mNumberToSubject.find(IteratorForSubject->GetNumber())->second].GetName() <<
 					endl;
 			}
@@ -1445,6 +1542,9 @@ void CClear::Execute(CUser* pCUser)
 		//按2或ESC返回主菜单
 		pCUser->ChangeCState(CMainMenu::Instance());
 		break;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
+		break;
 	default:
 		cout << "\a\r请按下有效按键";
 		break;
@@ -1468,7 +1568,7 @@ void CClear::Clear(CUser* pCUser)
 	//输入学号并判断返回
 	ClearInput();
 	cin >> StudentNumber;
-	if (StudentNumber == string("W"))
+	if (StudentNumber == string("W") || StudentNumber == string("w"))
 	{
 		ClearInput();
 		return;
@@ -1511,13 +1611,19 @@ void CExit::Execute(CUser* pCUser)
 	{
 	case '1':
 	case '\r':
+		//按1或Enter键存档退出
 		cout << "正在存档中，请勿强制关闭...";
 		FileOpetate("SaveData.dat", 'w');
 		PressAnyKeyToContinue('\0', "存档成功，按任意键退出");
 		exit(0);
 		break;
 	case '2':
+	case 27:
+		//按2或ESC返回菜单
 		pCUser->ChangeCState(CMainMenu::Instance());
+		break;
+	case '\0':
+		//出现\0是release下扩展字符所致，debug下应该不会输入'\0'
 		break;
 	default:
 		cout << "\a\r请按下有效按键";
@@ -1552,6 +1658,7 @@ void CExit::WriteData()
 			m_ofstream << *ListIterator << " ";
 		}
 	}
+	
 	//先写入课程数在写入课程号、课程名、学分、学生数、学生链表
 	m_ofstream << g_vSubject.size() - 1 << " ";
 	for (auto VectorIterator = g_vSubject.begin() + 1; VectorIterator != g_vSubject.end(); VectorIterator++)
@@ -1564,11 +1671,13 @@ void CExit::WriteData()
 			m_ofstream << *ListIterator << " ";
 		}
 	}
+	
 	//写入学号与学生关系的map
 	for (auto MapIterator = g_mNumberToStudent.begin(); MapIterator != g_mNumberToStudent.end(); MapIterator++)
 	{
 		m_ofstream << MapIterator->first << " " << MapIterator->second << " ";
 	}
+	
 	//写入课程号与课程关系的map
 	for (auto MapIterator = g_mNumberToSubject.begin(); MapIterator != g_mNumberToSubject.end(); MapIterator++)
 	{

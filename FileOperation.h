@@ -33,6 +33,9 @@ public:
 
 	//进行文件操作
 	void FileOpetate(string s, const char cLabel);
+
+	//判断是否正常操作
+	bool Good();
 protected:
 
 	//输出流
