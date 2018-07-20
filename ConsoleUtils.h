@@ -46,22 +46,22 @@ inline void CoutMenu(enum_menu MenuNow)
 	switch (MenuNow)
 	{
 	case WELCOME:
-		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		SetTextColor(FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY | FOREGROUND_BLUE /*| BACKGROUND_BLUE*/);
 		cout << R"(
-*********************************************
-欢迎使用学生成绩管理系统！
-作者：饶淙元
-email:rcycyzh@163.com
-(本内容为程设大作业，任何人不得用于商业用途)
-*********************************************
+*************************************************
+*          欢迎使用学生成绩管理系统！           *
+*                作者：饶淙元                   *
+*              email:rcycyzh@163.com            *
+*  (本内容为程设大作业，任何人不得用于商业用途) *
+*************************************************
 )";
 		PressAnyKeyToContinue();
 		break;
 	case MAIN:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统主菜单!\n";
-		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY | FOREGROUND_BLUE);
 		cout << R"123(
 ******************主菜单****************
 1.录入成绩
@@ -76,7 +76,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case PUTIN:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统录入成绩界面!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -93,7 +93,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case STUDENTS:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统查改学生成绩菜单!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -108,7 +108,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case SUBJECTS:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统查改课程成绩菜单!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -123,7 +123,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case RANK:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统排行榜!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -139,7 +139,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case CLEAR:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "已进入成绩管理系统主菜单!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -153,7 +153,7 @@ email:rcycyzh@163.com
 )123";
 		break;
 	case OVER:
-		
+
 		SetTextColor(FOREGROUND_BLUE | FOREGROUND_RED);
 		cout << "正在试图退出学生成绩管理系统!\n";
 		SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);

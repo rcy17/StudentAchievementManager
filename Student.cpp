@@ -110,8 +110,6 @@ void CStudent::AddSubjectGrade(const string &SubjectNumber, const string &Grade)
 			if (PressAnyKeyToContinue('\r', "按Enter键修改，按其他任意键放弃操作"))
 			{
 				iterator->assign(SubjectNumber + Grade);
-				cout << "修改成功!" << endl;
-				Sleep(1000);
 			}
 			return;
 		}
@@ -128,8 +126,6 @@ void CStudent::DeleteSubjectGrade(const string &SubjectNumber)
 		if (iterator->GetNumber() == SubjectNumber)
 		{
 			m_lstSubjects.erase(iterator);
-			cout << "删除成功!" << endl;
-			Sleep(1000);
 			return;
 		}
 	}
@@ -147,8 +143,6 @@ void CStudent::EditSubjectGrade(const string &SubjectNumber, const string &Grade
 		if (iterator->GetNumber() == SubjectNumber)//若找到则直接修改
 		{
 			iterator->assign(SubjectNumber + Grade);
-			cout << "修改成功!" << endl;
-			Sleep(1000);
 			return;
 		}
 

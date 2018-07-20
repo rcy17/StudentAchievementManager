@@ -13,8 +13,11 @@ String::~String()
 string String::GetNumber()
 {
 	string tem = *this;
-	for (auto iterator = tem.begin(); iterator != tem.end(); iterator++)
+	
+	//避开课程号第一位的大写字母
+	for (auto iterator = tem.begin()+1; iterator != tem.end(); iterator++)
 	{
+		//遇到第一个非字母后，将它往后的内容全部删除
 		if (*iterator > '9' || *iterator < '0')
 		{
 			tem.erase(iterator, tem.end());
@@ -28,15 +31,22 @@ string String::GetNumber()
 string String::GetGrade()
 {
 	string tem = *this;
-	for (auto iterator = tem.begin()+1; iterator != tem.end(); )
+
+	//先删除课程号第一位的大写字母
+	auto iterator = tem.begin();
+	iterator = tem.erase(iterator);
+	for (; iterator != tem.end(); )
 	{
+		//删除遇到的每一个数字
 		if (*iterator <= '9' && *iterator >= '0')
 		{
 
 			iterator=tem.erase(iterator);
 		}
 		else
+		{
 			return tem;
+		}
 	}
 	return tem;
 }

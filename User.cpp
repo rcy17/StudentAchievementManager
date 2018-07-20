@@ -104,6 +104,7 @@ bool CUser::CheckCredit(int Credit)
 bool CUser::DeleteStudent(const string&s)
 {
 	auto iterator = g_mNumberToStudent.find(s);
+
 	//先判断是否有该学号的学生
 	if (iterator != g_mNumberToStudent.end())
 	{
@@ -111,19 +112,22 @@ bool CUser::DeleteStudent(const string&s)
 		if (PressAnyKeyToContinue('\r', "按Enter键继续，按其他任意键取消"))
 		{
 			auto ptrLstStu = &(g_vStudent[iterator->second].m_lstSubjects);
+
 			//找到该学生的课程链表并遍历一遍
 			for (auto iterator = ptrLstStu->begin(); iterator != ptrLstStu->end(); iterator++)
 			{
 				auto ptrLstSub = &(g_vSubject[g_mNumberToSubject.find((*iterator).GetNumber())->second].m_lstStudents);
+
 				//再将该学生的课程对应的学生链表遍历一遍
-				for (auto it = ptrLstStu->begin(); it != ptrLstStu->end(); it++)
+				for (auto it = ptrLstSub->begin(); it != ptrLstSub->end(); it++)
 				{
 					if ((*it).GetNumber() == s)
 					{
 						//删除课程的学生链表中该学生的信息
 						ptrLstSub->erase(it);
+						break;
 					}
-					break;
+					
 				}
 			}
 			//删除该学生在学生vector中的信息
@@ -132,7 +136,9 @@ bool CUser::DeleteStudent(const string&s)
 			for (auto it = g_mNumberToStudent.begin(); it != g_mNumberToStudent.end(); it++)
 			{
 				if (it->second > iterator->second)
+				{
 					it->second--;
+				}
 			}
 			//删除该学生在map中的信息
 			g_mNumberToStudent.erase(iterator);

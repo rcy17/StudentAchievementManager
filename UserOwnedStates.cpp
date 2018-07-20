@@ -774,6 +774,7 @@ void CQueryStudents::Execute(CUser* pCUser)
 		pCUser->ChangeCState(CMainMenu::Instance());
 		break;
 	default:
+		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		cout << "\a\r请按下有效按键";
 		break;
 	}
@@ -807,8 +808,8 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 		for (auto iterator = g_vStudent[StudentLabel].m_lstSubjects.begin(); iterator != g_vStudent[StudentLabel].m_lstSubjects.end(); iterator++)
 		{
 			//打印出各科课程号，课程名，成绩
-			cout << iterator->GetNumber() << "\t"<<g_vSubject[pCUser->FindSubject(iterator->GetNumber())].GetName() << 
-				" "<<iterator->GetGrade() << endl;
+			cout << iterator->GetNumber() << "\t" << g_vSubject[pCUser->FindSubject(iterator->GetNumber())].GetName() <<
+				" " << iterator->GetGrade() << endl;
 		}
 
 		//输出课程均分
@@ -816,7 +817,11 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 		if (GPA == -2.0f)
 			cout << "该学生暂无有效GPA信息" << endl;
 		else
-			cout << "该学生GPA为" << GPA << endl;
+		{
+			cout << "该学生GPA为";
+			cout.precision(4);
+			cout << GPA << endl;
+		}
 		cout << "是否需要删改或增添成绩信息?" << endl;
 		while (!PressAnyKeyToContinue(27, "按ESC返回,按其他任意键编辑信息。"))
 		{
@@ -825,7 +830,7 @@ void CQueryStudents::QueryStudent(CUser* pCUser)
 		}
 		return;
 	}
-	
+
 	//找不到该学号对应学生则考虑添加
 	else
 	{
@@ -996,7 +1001,7 @@ void CQuerySubjects::Enter(CUser* pCUser)
 void CQuerySubjects::Execute(CUser* pCUser)
 {
 	//等待用户按下主菜单数字键
-	SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 	char c = _getch();
 	switch (c)
 	{
@@ -1019,6 +1024,7 @@ void CQuerySubjects::Execute(CUser* pCUser)
 		pCUser->ChangeCState(CMainMenu::Instance());
 		break;
 	default:
+		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		cout << "\a\r请按下有效按键";
 		break;
 	}
@@ -1054,18 +1060,24 @@ void CQuerySubjects::QuerySubject(CUser* pCUser)
 		//逐行输出学号，学生姓名，课程成绩
 		for (auto iterator = g_vSubject[SubjectLabel].m_lstStudents.begin(); iterator != g_vSubject[SubjectLabel].m_lstStudents.end(); iterator++)
 		{
-			cout << iterator->GetNumber() << " "<<g_vStudent[pCUser->FindStudent(iterator->GetNumber())].GetName() <<
-				" "<< iterator->GetGrade() << endl;
+			cout << iterator->GetNumber() << " " << g_vStudent[pCUser->FindStudent(iterator->GetNumber())].GetName() <<
+				" " << iterator->GetGrade() << endl;
 		}
-		
+
 		//输出课程均分
 		float GPA = g_vSubject[SubjectLabel].GetGPA();
 		if (GPA == -2.0f)
+		{
 			cout << "该课为P/F课程，不计算GPA" << endl;
+		}
 		else
-			cout << "该课程平均成绩为" << GPA << endl;
+		{
+			cout << "该课程平均成绩为";
+			cout.precision(4);
+			cout << GPA << endl;
+		}
 		cout << "是否需要删改或增添成绩信息?" << endl;
-		while (PressAnyKeyToContinue(27, "按ESC返回,按其他任意键继续编辑信息。"))
+		while (!PressAnyKeyToContinue(27, "按ESC返回,按其他任意键继续编辑信息。"))
 		{
 			//进入学生成绩修改界面
 			EditInfomation(pCUser, SubjectNumber, SubjectLabel);
@@ -1107,16 +1119,18 @@ void CQuerySubjects::EditInfomation(CUser*pCUser, const string&SubjectNumber, co
 			string NewGrade;
 			cout << "学号为" << StudentNumber << "姓名为" << g_vStudent[StudentLabel].GetName() << "的学生的成绩为"
 				<< g_vStudent[StudentLabel].GetSubjectGrade(SubjectNumber) << endl;
-			cout << "请输入其新成绩(用大写字母表示,删除请输入W):";
+			cout << "请输入其新成绩(用大写字母表示,删除成绩请输入W):";
 			if ((NewGrade = InputPa()) != string("W"))
 			{
 				g_vStudent[StudentLabel].EditSubjectGrade(SubjectNumber, NewGrade);
 				g_vSubject[SubjectLabel].EditStudentGrade(StudentNumber, NewGrade);
+				cout << "修改成功!" << endl;
 			}
 			else
 			{
 				g_vStudent[StudentLabel].DeleteSubjectGrade(SubjectNumber);
 				g_vSubject[SubjectLabel].DeleteStudentGrade(StudentNumber);
+				cout << "删除成功!" << endl;
 			}
 		}
 
@@ -1259,7 +1273,7 @@ void CRankList::Execute(CUser* pCUser)
 {
 	//等待用户按下主菜单数字键
 
-	SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+	SetTextColor(FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY);
 	char c = _getch();
 	switch (c)
 	{
@@ -1277,7 +1291,9 @@ void CRankList::Execute(CUser* pCUser)
 		break;
 	case '4':
 	case 27:
+		SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
 		pCUser->ChangeCState(CMainMenu::Instance());
+		return;
 	default:
 		cout << "\a\r请按下有效按键";
 		break;
@@ -1331,7 +1347,7 @@ void CRankList::ShowGPAList()
 		}
 		else
 		{
-			cout.precision(3);
+			cout.precision(4);
 			cout << GPA << endl;
 		}
 	}
