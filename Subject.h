@@ -40,7 +40,7 @@ public:
 	bool operator==(const CSubject&A);
 
 	//记录所有选课学生学号与成绩的链表
-	list<String>m_lstStudents;
+	list<CString>m_lstStudents;
 
 	//计算所有选课学生的该科GPA
 	float GetGPA();

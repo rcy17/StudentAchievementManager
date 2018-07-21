@@ -51,7 +51,7 @@ void CSubject::AddStudentGrade(const string &StudentNumber, const string &Grade,
 			}
 
 			//不一致则询问是否修改
-			cout << "学号为" << StudentNumber << "已有该科成绩,为" << iterator->GetGrade() <<
+			cout << "学号为" << StudentNumber << "的学生已有该科成绩,为" << iterator->GetGrade() <<
 				"，是否修改为" << Grade << "?" << endl;
 			if (PressAnyKeyToContinue('\r', "按Enter键修改，按其他任意键放弃操作"))
 			{

@@ -43,7 +43,7 @@ public:
 	string GetSubjectGrade(const string &SubejctNumber);
 
 	//记录了该学生所有课程号与成绩的链表
-	list<String>m_lstSubjects;
+	list<CString>m_lstSubjects;
 
 	//重载==运算符，比较依据是学号
 	bool operator==(const CStudent&A);

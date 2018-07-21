@@ -75,10 +75,6 @@ float CStudent::GetGPA()
 	//遍历所修课程，累加绩点与学分，并求均值
 	for (auto iterator = m_lstSubjects.begin(); iterator != m_lstSubjects.end(); iterator++)
 	{
-		/*string Number = iterator->GetNumber();
-		auto it = g_mNumberToSubject.find(Number);
-		size_t Label = it->second;
-		int Credit = g_vSubject[Label].GetCredit();*/
 		int Credit = g_vSubject[(g_mNumberToSubject.find(iterator->GetNumber()))->second].GetCredit();
 		float GP = GetGP(iterator->GetGrade());
 		

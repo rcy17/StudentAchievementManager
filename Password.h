@@ -74,9 +74,9 @@ inline void CPassword::SetWord()
 	//采用自己编写的随机数算法进行加密
 	for (int i = 0; i < m_KeyInput.length(); i++)
 	{
-		unsigned int out;
-		srand(i*m_KeyInput[i]);
-		for (int j = 0; j < i - 1; j++)
+		unsigned int out=0;
+		srand((i + 1)*m_KeyInput[i]); 
+		for (int j = 0; j < i+1 ; j++)
 		{
 			out = rand() % ((i + 1)*m_KeyInput[j]);
 		}
@@ -91,16 +91,15 @@ inline void CPassword::InputWord()
 	{
 		m_KeyTry.clear();
 		cin >> m_KeyInput;
-		int i = 0;
 		for (int i = 0; i < m_KeyInput.length(); i++)
 		{
-			unsigned int out;
-			srand(i*m_KeyInput[i]);
-			for (int j = 0; j < i - 1; j++)
+			unsigned int out=0;
+			srand((i + 1)*m_KeyInput[i]);
+			for (int j = 0; j < i+1; j++)
 			{
 				out = rand() % ((i + 1)*m_KeyInput[j]);
 			}
-			out = rand() % ((i + 1)*m_KeyInput[i]);
+			out =  rand() % ((i + 1)*m_KeyInput[i]);
 			m_KeyTry += to_string(out);
 		}
 		if (m_Key == m_KeyTry)

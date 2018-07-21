@@ -1,16 +1,16 @@
 #include "String.h"
 
-String::String(string s) :string(s)
+CString::CString(string s) :string(s)
 {
 }
 
-String::~String()
+CString::~CString()
 {
 
 }
 
 //读取数据中的学号/课程号
-string String::GetNumber()
+string CString::GetNumber()
 {
 	string tem = *this;
 	
@@ -28,7 +28,7 @@ string String::GetNumber()
 }
 
 //读取数据中的成绩
-string String::GetGrade()
+string CString::GetGrade()
 {
 	string tem = *this;
 

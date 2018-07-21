@@ -4,7 +4,7 @@
 //
 //  Name:   String.h
 //
-//  Desc:   定义了一个继承自string的String类
+//  Desc:   定义了一个继承自string的CString类
 //
 //------------------------------------------------------------------------
 #include<string>
@@ -12,11 +12,11 @@
 using namespace std;
 
 //重载了string类从而做到将学号与成绩拼接、拆开
-class String :public string
+class CString :public string
 {
 public:
-	String(string);
-	~String();
+	CString(string);
+	~CString();
 
 	//获取学号/课程号
 	string GetNumber();

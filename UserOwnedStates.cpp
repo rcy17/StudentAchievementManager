@@ -3,7 +3,8 @@
 #include "ConsoleUtils.h"
 #include<algorithm>
 #include <iostream>
-using std::cout;
+
+
 
 //一个记录从学号到学生的map
 extern map<string, size_t>g_mNumberToStudent;
@@ -13,6 +14,10 @@ extern map<string, size_t>g_mNumberToSubject;
 extern vector<CStudent>g_vStudent;
 //一个记录了所有课程的vector
 extern vector<CSubject>g_vSubject;
+
+//一个用来标记是否继续运行的全局变量
+//将在退出函数中被置为flase以退出
+extern bool g_bRunFlag;
 
 //----------------------------------------欢迎界面的方法类
 
@@ -1615,7 +1620,7 @@ void CExit::Execute(CUser* pCUser)
 		cout << "正在存档中，请勿强制关闭...";
 		FileOpetate("SaveData.dat", 'w');
 		PressAnyKeyToContinue('\0', "存档成功，按任意键退出");
-		exit(0);
+		g_bRunFlag = false;
 		break;
 	case '2':
 	case 27:
