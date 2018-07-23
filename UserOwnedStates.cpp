@@ -52,7 +52,8 @@ void CInitialize::Execute(CUser* pCUser)
 		{
 			cout << "缺少相应密匙文件，不可访问!" << endl;
 			PressAnyKeyToContinue();
-			exit(0);
+			g_bRunFlag = false;
+			return;
 		}
 		CPassword::ReadData();
 		m_ifstream.close();
